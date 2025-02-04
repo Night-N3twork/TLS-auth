@@ -17,9 +17,16 @@ app.get('/', (req, res) => {
       return res.status(403).send('DNS resolution failed');
     }
 
-    const predefinedIP = config.ip;
+    const predefinedIPs = config.ips;
+    const subdomainCount = (domain.match(/\./g) || []).length;
 
-    if (addresses.includes(predefinedIP) && ((domain.match(/\./g) || []).length) <= 3) {
+    if (subdomainCount > config.subdomainAmount) {
+      return res.status(403).send('Too many subdomains');
+    }
+
+    const isValid = predefinedIPs.some(ip => addresses.includes(ip));
+
+    if (isValid) {
       return res.status(200).send('DNS is pointing to the predefined IP');
     } else {
       return res.status(403).send('DNS is not pointing to the predefined IP');
@@ -27,7 +34,7 @@ app.get('/', (req, res) => {
   });
 });
 
-const PORT = 5555;
+const PORT = config.port || 5555;
 app.listen(PORT, () => {
   console.log(`TLS check server is running on port ${PORT}`);
 });
