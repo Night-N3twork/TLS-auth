@@ -17,10 +17,10 @@ app.get('/', (req, res) => {
       return res.status(403).send('DNS resolution failed');
     }
 
-    const predefinedIPs = config.ips;
+    const predefinedIPs = Array.isArray(config.ips) ? config.ips : [];
     const subdomainCount = (domain.match(/\./g) || []).length;
 
-    if (subdomainCount > config.subdomainAmount) {
+    if (typeof config.subdomainAmount === 'number' && subdomainCount > config.subdomainAmount) {
       return res.status(403).send('Too many subdomains');
     }
 
