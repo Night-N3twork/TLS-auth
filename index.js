@@ -66,11 +66,25 @@ app.get('/', async (req, res) => {
 
   dns.resolve4(domain, async (err, addresses) => {
     if (err || !addresses || addresses.length === 0) {
+      console.error('DNS error:', err);
       return res.status(403).send('DNS resolution failed');
     }
 
+    console.log('Resolved addresses:', addresses);
+
     const isPointingToUs = predefinedIPs.some(ip => addresses.includes(ip));
-    const isCloudflareDNS = await Promise.all(addresses.map(isCloudflareIP));
+    const cidrs = await fetchCloudflareCIDRs();
+    console.log('Cloudflare CIDRs:', cidrs);
+
+    const isCloudflareDNS = await Promise.all(addresses.map(async ip => {
+      const match = cidrs.some(cidr => new CIDR(cidr).contains(ip));
+      if (match) {
+        console.log(`IP ${ip} matches Cloudflare CIDR`);
+      } else {
+        console.log(`IP ${ip} does NOT match any Cloudflare CIDR`);
+      }
+      return match;
+    }));
     const isCloudflareMatch = isCloudflareDNS.includes(true);
 
     if (isPointingToUs) {
@@ -81,6 +95,8 @@ app.get('/', async (req, res) => {
       const isCFViaHTTP = await isCloudflareHeaders(domain);
       if (isCFViaHTTP) {
         return res.status(200).send('Cloudflare-proxied and allowed');
+      } else {
+        console.log('Cloudflare DNS match, but HTTP headers do not indicate Cloudflare');
       }
     }
 
