@@ -92,12 +92,7 @@ app.get('/', async (req, res) => {
     }
 
     if (isCloudflareMatch) {
-      const isCFViaHTTP = await isCloudflareHeaders(domain);
-      if (isCFViaHTTP) {
-        return res.status(200).send('Cloudflare-proxied and allowed');
-      } else {
-        console.log('Cloudflare DNS match, but HTTP headers do not indicate Cloudflare');
-      }
+      return res.status(200).send('DNS is pointing to Cloudflare');
     }
 
     return res.status(403).send('DNS is not pointing to allowed IP or Cloudflare');
