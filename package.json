@@ -1,14 +1,17 @@
 {
     "name": "tls-auth-server",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "",
     "main": "index.js",
     "scripts": {
-      "start": "node index.js"
+        "start": "node index.js"
     },
     "dependencies": {
-      "dns": "^0.2.2",
-      "express": "^4.18.2"
+        "axios": "^1.9.0",
+        "dns": "^0.2.2",
+        "express": "^4.21.2",
+        "ip-cidr": "^4.0.2",
+        "node-fetch": "^3.3.2"
     },
     "author": "Amplify"
-  }
+}
