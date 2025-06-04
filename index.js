@@ -3,7 +3,7 @@ import dns from "dns";
 import axios from "axios";
 import fetch from "node-fetch";
 import CIDR from "ip-cidr";
-import config from "./config.json" assert { type: "json" };
+import config from "./config.json" with { type: "json" };
 
 const app = express();
 const blockList = new Set(config.blockList || []);
