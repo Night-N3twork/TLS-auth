@@ -1,9 +1,9 @@
-const express = require('express');
-const dns = require('dns');
-const axios = require('axios');
-const fetch = require('node-fetch');
-const CIDR = require('ip-cidr');
-const config = require('./config.json');
+import express from "express";
+import dns from "dns";
+import axios from "axios";
+import fetch from "node-fetch";
+import CIDR from "ip-cidr";
+import config from "./config.json" assert { type: "json" };
 
 const app = express();
 const blockList = new Set(config.blockList || []);
